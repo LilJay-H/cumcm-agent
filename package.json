@@ -1,0 +1,7 @@
+{
+  "name": "cumcm-agent-v0-diagram-tools",
+  "private": true,
+  "devDependencies": {
+    "@mermaid-js/mermaid-cli": "11.12.0"
+  }
+}

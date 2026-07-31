@@ -1,0 +1,68 @@
+flowchart TB
+    subgraph CP["控制面"]
+        direction LR
+        O["Orchestrator<br/>pipeline/orchestrator.py"]
+        C["配置<br/>config/default.json"]
+        AB["消融开关<br/>research / review / audit"]
+        CC["Claude Code Runtime<br/>runtime/claude.py<br/>claude-opus-4-6"]
+        C --> O
+        AB --> O
+    end
+
+    subgraph P1["① 理解与证据"]
+        direction LR
+        U["赛题原文/附件<br/>只读输入"]
+        I["Intake + Context Manager<br/>core/workspace.py"]
+        A["问题分析<br/>prompt 01"]
+        H1{{"人工检查点 1<br/>题意与成功标准"}}
+        RQ["检索词规划<br/>prompt 02_queries"]
+        WT["本地来源工具<br/>DuckDuckGo + HTTP Fetch<br/>tools/web_sources.py"]
+        R["证据台账综合<br/>prompt 02_synthesis"]
+        U --> I --> A --> H1 --> RQ --> WT --> R
+    end
+
+    subgraph P2["② 建模与求解"]
+        direction LR
+        S["候选方案竞争/形式化<br/>prompt 03"]
+        H2{{"人工检查点 2<br/>方案选择"}}
+        SR["独立反方审核<br/>prompt 04"]
+        CG["求解代码生成<br/>prompt 05"]
+        EX["受控 Python 执行<br/>stages/solver.py"]
+        N["results.json + 300 dpi PNG<br/>固定种子 + 机械自检"]
+        RA["结果解释<br/>prompt 06"]
+        S --> H2 --> SR --> CG --> EX --> N --> RA
+    end
+
+    subgraph P3["③ 论文与评测"]
+        direction LR
+        PD["中文 CUMCM 论文初稿<br/>prompt 07"]
+        PA["数值/引用/结构审核<br/>prompt 08"]
+        H3{{"人工检查点 3<br/>论文审核与人工修订"}}
+        PF["确定性终稿整理<br/>tools/paper_finalizer.py"]
+        PR["Pandoc + XeLaTeX<br/>tools/paper_renderer.py"]
+        PDF["draft.pdf + 首页面预览"]
+        E["机械评测<br/>evaluation/rubric.py"]
+        PD --> PA --> H3 --> PF --> PR --> PDF --> E
+    end
+
+    R --> S
+    RA --> PD
+
+    O -. "按配置调度整条流水线" .-> I
+    CC -. "统一模型调用与用量留痕<br/>覆盖所有紫色推理阶段" .-> A
+
+    W[("Run Workspace<br/>manifest + SHA-256 + 父依赖<br/>logs/llm_calls.jsonl")]
+    R --> W
+    N --> W
+    PF --> W
+    W --> E
+    W --> EP["Episode / Ablation 指标<br/>质量、耗时、费用、失败轨迹<br/>ICML 评测接口"]
+
+    classDef human fill:#fff2cc,stroke:#b8860b,stroke-width:2px;
+    classDef runtime fill:#e8f0fe,stroke:#3367d6,stroke-width:1.5px;
+    classDef artifact fill:#e6f4ea,stroke:#188038,stroke-width:1.5px;
+    classDef reasoning fill:#f3e8ff,stroke:#7e57c2;
+    class H1,H2,H3 human;
+    class CC,WT,EX,PR runtime;
+    class W,N,PDF,E,EP artifact;
+    class A,RQ,R,S,SR,CG,RA,PD,PA reasoning;

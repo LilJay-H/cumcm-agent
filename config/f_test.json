@@ -1,0 +1,11 @@
+{
+  "checkpoints": {
+    "mode": "auto"
+  },
+  "ablation": {
+    "web_research": true,
+    "independent_review": true,
+    "paper_audit": true
+  }
+}
+

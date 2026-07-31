@@ -1,0 +1,72 @@
+{
+  "schema": 1,
+  "run_id": "2026-icm-f-v0",
+  "actual_models": [
+    "claude-opus-4-6"
+  ],
+  "stage_count": 22,
+  "completed_stages": [
+    "analysis",
+    "research",
+    "strategy",
+    "strategy_review",
+    "solver_recovery",
+    "results_analysis",
+    "paper_draft",
+    "paper_audit",
+    "paper_finalize",
+    "render",
+    "paper_finalize",
+    "render",
+    "paper_finalize",
+    "render",
+    "research_fallback",
+    "render",
+    "research_fallback",
+    "render",
+    "research_fallback",
+    "render",
+    "paper_finalize",
+    "render"
+  ],
+  "failed_stages": [
+    "solver",
+    "paper_final"
+  ],
+  "recovered_failures": [
+    "paper_final",
+    "solver"
+  ],
+  "blocking_failed_stages": [],
+  "solver_returncode": 0,
+  "numeric_leaf_count": 515,
+  "figure_count": 3,
+  "paper_characters": 20161,
+  "paper_chinese_ratio": 0.4613,
+  "paper_url_count": 4,
+  "required_sections": {
+    "摘要": true,
+    "问题重述": true,
+    "模型假设": true,
+    "模型建立": true,
+    "求解": true,
+    "结果分析": true,
+    "敏感性或稳健性": true,
+    "模型评价": true,
+    "参考文献": true
+  },
+  "checks": {
+    "pipeline_complete": true,
+    "solver_reproducible": true,
+    "numeric_evidence": true,
+    "figures": true,
+    "paper_sections": true,
+    "paper_is_chinese": true,
+    "no_table_of_contents": true,
+    "citations_present": true,
+    "pdf_rendered": true
+  },
+  "passed_checks": 9,
+  "total_checks": 9,
+  "pass": true
+}

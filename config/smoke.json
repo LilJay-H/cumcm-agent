@@ -1,0 +1,18 @@
+{
+  "checkpoints": {
+    "mode": "auto",
+    "stages": []
+  },
+  "pipeline": [
+    {
+      "id": "smoke_paper",
+      "type": "llm",
+      "prompt": "10_smoke_paper.md",
+      "inputs": [
+        "input/problem_context.md"
+      ],
+      "output": "paper/draft.md",
+      "kind": "paper_final"
+    }
+  ]
+}

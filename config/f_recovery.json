@@ -1,0 +1,68 @@
+{
+  "runtime": {
+    "timeout_seconds": 420
+  },
+  "checkpoints": {
+    "mode": "auto",
+    "stages": []
+  },
+  "pipeline": [
+    {
+      "id": "solver_recovery",
+      "type": "solver",
+      "prompt": "05_solver_recovery.md",
+      "inputs": [
+        "artifacts/03_strategy.md",
+        "artifacts/03_strategy_review.md"
+      ]
+    },
+    {
+      "id": "results_analysis",
+      "type": "llm",
+      "prompt": "06_results.md",
+      "inputs": [
+        "artifacts/02_research.md",
+        "artifacts/03_strategy.md",
+        "artifacts/03_strategy_review.md",
+        "results/results.json",
+        "results/solver_run.json"
+      ],
+      "output": "artifacts/05_results_analysis.md",
+      "kind": "result_interpretation"
+    },
+    {
+      "id": "paper_draft",
+      "type": "llm",
+      "prompt": "07_paper.md",
+      "inputs": [
+        "input/problem_context.md",
+        "artifacts/01_analysis.md",
+        "artifacts/02_research.md",
+        "artifacts/03_strategy.md",
+        "artifacts/03_strategy_review.md",
+        "results/results.json",
+        "artifacts/05_results_analysis.md",
+        "generated/solver.py",
+        "manifest.json"
+      ],
+      "output": "paper/draft_v1.md",
+      "kind": "paper_draft"
+    },
+    {
+      "id": "paper_audit",
+      "type": "llm",
+      "prompt": "08_paper_audit.md",
+      "inputs": [
+        "paper/draft_v1.md",
+        "results/results.json",
+        "artifacts/02_research.md"
+      ],
+      "output": "artifacts/06_paper_audit.md",
+      "kind": "paper_review"
+    },
+    {
+      "id": "paper_finalize",
+      "type": "paper_finalize"
+    }
+  ]
+}

@@ -1,0 +1,108 @@
+{
+  "checkpoints": {
+    "mode": "auto",
+    "stages": []
+  },
+  "paper_finalize": {
+    "source": "paper/draft_v1.md",
+    "output": "paper/draft.md",
+    "replacements": [
+      {
+        "name": "flatten_multilevel_forecast_table",
+        "find": "| 年份 | 软件开发者 ||| 电工 ||| 平面设计师 |||\n| | 保守 | 基准 | 激进 | 保守 | 基准 | 激进 | 保守 | 基准 | 激进 |\n|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|",
+        "replace": "| 年份 | 软件-保守 | 软件-基准 | 软件-激进 | 电工-保守 | 电工-基准 | 电工-激进 | 设计-保守 | 设计-基准 | 设计-激进 |\n|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|"
+      },
+      {
+        "name": "correct_net_deviation_range",
+        "find": "−10.8% 至 +1.8%",
+        "replace": "−12.6% 至 +1.8%"
+      },
+      {
+        "name": "declare_employment_elasticities",
+        "find": "其中 $\\Delta R_i(t) = R_i(t+1) - R_i(t)$ 和 $\\Delta A_i(t) = A_i(t+1) - A_i(t)$ 分别为替代率和增强率的年度增量，$\\lambda, \\mu > 0$ 为就业弹性系数。",
+        "replace": "其中 $\\Delta R_i(t) = R_i(t+1) - R_i(t)$ 和 $\\Delta A_i(t) = A_i(t+1) - A_i(t)$ 分别为替代率和增强率的年度增量。求解程序取替代弹性 $\\lambda=1.0$、增强弹性 $\\mu=0.8$；二者均为情景参数，并在敏感性分析中分别乘以 $[0.5,1.5]$ 的扰动倍数。"
+      },
+      {
+        "name": "limit_robustness_claim",
+        "find": "电工的扩招建议在参数扫描范围内高度稳健",
+        "replace": "在本模型给定的参数扫描范围内，电工的扩招建议未发生翻转"
+      },
+      {
+        "name": "correct_ai_log_location",
+        "find": "Claude Code 会话日志保存在本地工作目录的 `.claude/` 下",
+        "replace": "完整提示词、回复、实际模型、耗时与用量记录在支撑材料 `logs/llm_calls.jsonl`"
+      },
+      {
+        "name": "replace_false_figure_statement",
+        "find": "**图表说明**：本版初稿未生成可视化图表（`figures/` 目录为空）。完整版论文应包含以下图表：",
+        "replace": "**图表说明**：求解程序已生成并随支撑材料提交以下三张 300 dpi 图表：`career_scenarios.png`、`curriculum_allocations.png`、`sensitivity_heatmap.png`。其他图表为后续扩展建议："
+      },
+      {
+        "name": "add_solver_to_supporting_files",
+        "find": "| `results/results.json` | 模型计算的全部数值输出，包含三职业×三场景的就业指数轨迹、替代率/增强率序列、课程优化结果和敏感性分析 |",
+        "replace": "| `generated/solver.py` | 完整可运行求解程序（固定随机种子 42） |\n| `results/results.json` | 模型计算的全部数值输出，包含三职业×三场景的就业指数轨迹、替代率/增强率序列、课程优化结果和敏感性分析 |\n| `figures/*.png` | 求解程序生成的三张 300 dpi 图表 |"
+      },
+      {
+        "name": "replace_missing_le_symbol",
+        "find": "均≤0.15",
+        "replace": "均不超过 0.15"
+      },
+      {
+        "name": "replace_missing_ge_symbol",
+        "find": "约 ≥1.3×",
+        "replace": "约不低于 1.3 倍"
+      },
+      {
+        "name": "replace_missing_le_symbol_2",
+        "find": "约 ≤0.7×",
+        "replace": "约不高于 0.7 倍"
+      },
+      {
+        "name": "replace_missing_approx_symbol",
+        "find": "≈",
+        "replace": "约为"
+      },
+      {
+        "name": "record_partial_source_verification",
+        "find": "本研究的数据获取受到网络访问权限限制，**未能从 BLS、O\\*NET 等数据库获取实际就业统计和任务评分数据**。所有核心参数均以情景假设方式赋值，在论文中明确标注为\"情景参数\"。",
+        "replace": "本研究的补充检索已核验 Eloundou 等（2023）的 arXiv 摘要页，但 **BLS、O\\*NET 的实际就业统计和任务评分数据仍未成功获取**；摘要中的总体暴露比例也不能替代职业级标定。因此所有核心参数仍以情景假设方式赋值，并在论文中明确标注为“情景参数”。"
+      },
+      {
+        "name": "clarify_reference_verification_scope",
+        "find": "> **说明**：由于网络调研阶段未能实际获取数据，以下文献为建模过程中引用的方法论和理论来源。标注 [未获取数据] 表示引用了其方法论框架但未实际提取其中的定量数据。",
+        "replace": "> **说明**：以下文献主要用于方法论和理论依据；除 Eloundou 等（2023）的 arXiv 摘要页外，未提取职业级定量数据。标注 [未获取数据] 的条目仅作为待人工复核的来源线索。"
+      },
+      {
+        "name": "mark_arxiv_summary_verified",
+        "find": "https://arxiv.org/abs/2303.10130 [未获取数据]",
+        "replace": "https://arxiv.org/abs/2303.10130 [已核验摘要，未提取职业级数据]"
+      }
+    ],
+    "figure_insertions": [
+      {
+        "path": "figures/career_scenarios.png",
+        "label": "图 1",
+        "caption": "三类职业在不同 Gen-AI 情景下的就业需求指数及无 AI 反事实",
+        "before": "### 7.2 关键发现"
+      },
+      {
+        "path": "figures/curriculum_allocations.png",
+        "label": "图 2",
+        "caption": "仅就业目标与加入公平性、韧性后的课程学分配置比较",
+        "before": "## 8 敏感性、稳健性与非就业目标分析"
+      },
+      {
+        "path": "figures/sensitivity_heatmap.png",
+        "label": "图 3",
+        "caption": "替代与增强弹性乘数二维扫描下的 2036 年需求指数",
+        "before": "### 8.2 策略翻转点"
+      }
+    ]
+  },
+  "pipeline": [
+    {
+      "id": "paper_finalize",
+      "type": "paper_finalize"
+    }
+  ]
+}

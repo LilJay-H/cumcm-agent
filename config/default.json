@@ -1,0 +1,160 @@
+{
+  "runtime": {
+    "command": "claude",
+    "model": "claude-opus-4-6",
+    "timeout_seconds": 900,
+    "max_budget_usd": null
+  },
+  "context": {
+    "max_total_chars": 120000,
+    "max_artifact_chars": 30000,
+    "chunk_threshold_chars": 50000,
+    "chunk_chars": 24000,
+    "chunk_overlap_chars": 1000
+  },
+  "checkpoints": {
+    "mode": "interactive",
+    "stages": [
+      "analysis",
+      "strategy",
+      "paper_audit"
+    ]
+  },
+  "ablation": {
+    "web_research": true,
+    "independent_review": true,
+    "paper_audit": true
+  },
+  "solver": {
+    "timeout_seconds": 300,
+    "minimum_figures": 3
+  },
+  "research": {
+    "max_queries": 5,
+    "results_per_query": 4,
+    "max_pages": 10,
+    "max_page_chars": 10000,
+    "timeout_seconds": 20
+  },
+  "render": {
+    "pandoc_command": "pandoc",
+    "pdf_engine": "xelatex",
+    "cjk_font": "SimSun",
+    "timeout_seconds": 180
+  },
+  "paper_finalize": {
+    "source": "paper/draft_v1.md",
+    "output": "paper/draft.md",
+    "replacements": [],
+    "figure_insertions": [],
+    "auto_insert_unreferenced_figures": true
+  },
+  "pipeline": [
+    {
+      "id": "analysis",
+      "type": "llm",
+      "prompt": "01_analysis.md",
+      "inputs": [
+        "input/problem_context.md"
+      ],
+      "output": "artifacts/01_analysis.md",
+      "kind": "problem_analysis"
+    },
+    {
+      "id": "research",
+      "type": "web_research",
+      "query_prompt": "02_research_queries.md",
+      "synthesis_prompt": "02_research_synthesis.md",
+      "inputs": [
+        "input/problem_context.md",
+        "artifacts/01_analysis.md"
+      ],
+      "output": "artifacts/02_research.md",
+      "kind": "source_ledger",
+      "ablation_flag": "web_research"
+    },
+    {
+      "id": "strategy",
+      "type": "llm",
+      "prompt": "03_strategy.md",
+      "inputs": [
+        "input/problem_context.md",
+        "artifacts/01_analysis.md",
+        "artifacts/02_research.md"
+      ],
+      "output": "artifacts/03_strategy.md",
+      "kind": "model_strategy"
+    },
+    {
+      "id": "strategy_review",
+      "type": "llm",
+      "prompt": "04_strategy_review.md",
+      "inputs": [
+        "input/problem_context.md",
+        "artifacts/02_research.md",
+        "artifacts/03_strategy.md"
+      ],
+      "output": "artifacts/03_strategy_review.md",
+      "kind": "independent_review",
+      "ablation_flag": "independent_review"
+    },
+    {
+      "id": "solver",
+      "type": "solver",
+      "prompt": "05_solver.md",
+      "inputs": [
+        "artifacts/03_strategy.md",
+        "artifacts/03_strategy_review.md"
+      ]
+    },
+    {
+      "id": "results_analysis",
+      "type": "llm",
+      "prompt": "06_results.md",
+      "inputs": [
+        "artifacts/02_research.md",
+        "artifacts/03_strategy.md",
+        "artifacts/03_strategy_review.md",
+        "results/results.json",
+        "results/solver_run.json"
+      ],
+      "output": "artifacts/05_results_analysis.md",
+      "kind": "result_interpretation"
+    },
+    {
+      "id": "paper_draft",
+      "type": "llm",
+      "prompt": "07_paper.md",
+      "inputs": [
+        "input/problem_context.md",
+        "artifacts/01_analysis.md",
+        "artifacts/02_research.md",
+        "artifacts/03_strategy.md",
+        "artifacts/03_strategy_review.md",
+        "results/results.json",
+        "artifacts/05_results_analysis.md",
+        "generated/solver.py",
+        "manifest.json"
+      ],
+      "output": "paper/draft_v1.md",
+      "kind": "paper_draft"
+    },
+    {
+      "id": "paper_audit",
+      "type": "llm",
+      "prompt": "08_paper_audit.md",
+      "inputs": [
+        "paper/draft_v1.md",
+        "results/results.json",
+        "artifacts/02_research.md"
+      ],
+      "output": "artifacts/06_paper_audit.md",
+      "kind": "paper_review",
+      "ablation_flag": "paper_audit"
+    },
+    {
+      "id": "paper_finalize",
+      "type": "paper_finalize"
+    }
+  ]
+}
